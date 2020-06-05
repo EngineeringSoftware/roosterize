@@ -1,0 +1,7 @@
+configargparse
+nltk
+future
+seutil==0.4.12
+six
+torchtext==0.4.0
+tqdm==4.30.*

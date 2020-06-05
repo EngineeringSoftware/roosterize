@@ -1,0 +1,21 @@
+{
+    "batch_size": 16,
+    "beam_search_max_len_factor": 1.5,
+    "ckpt_keep_max": 3,
+    "decoder": "rnn",
+    "dim_decoder_hidden": 500,
+    "dim_embed": 500,
+    "dim_encoder_hidden": 500,
+    "dropout": 0.5,
+    "early_stopping_threshold": 3,
+    "encoder": "brnn",
+    "input_max": 3000,
+    "inputs": "bsexpl1+fsexpl1",
+    "learning_rate": 0.001,
+    "max_grad_norm": 5,
+    "output": "st",
+    "rnn_num_layers": 1,
+    "use_attn": true,
+    "use_copy": true,
+    "vocab_input_frequency_threshold": 5
+}
