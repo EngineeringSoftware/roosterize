@@ -1,0 +1,278 @@
+- full_name: math-comp_math-comp
+  short_name: math-comp
+  id: mathcomp
+  url: https://github.com/math-comp/math-comp
+  sha: 748d716efb2f2f75946c8386e441ce1789806a39
+  tag: 'mathcomp-1.9.0'  
+  build_cmd: 'cd mathcomp && make -j8'
+  install_cmd: 'cd mathcomp && make install'
+  ignore_path_regex: 'mathcomp/test_suite/.*'
+  serapi_options: '-R mathcomp,mathcomp'
+  group: 't1'
+
+- full_name: imdea-software_fcsl-pcm
+  short_name: fcsl-pcm
+  id: fcslpcm
+  url: https://github.com/imdea-software/fcsl-pcm
+  sha: eef45034808487fa3fa7dc360514c6734efc8d07
+  tag: 'v1.1.0'
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,fcsl'
+  group: 't3'
+
+- full_name: DistributedComponents_disel
+  short_name: disel
+  id: disel
+  url: https://github.com/DistributedComponents/disel
+  sha: e8aa80c486ec618888b6d0c801da7f61b6046daa
+  tag: 'v2.1'
+  dependencies:
+  - math-comp_math-comp
+  - imdea-software_fcsl-pcm
+  build_cmd: 'make -j8 -C Core'
+  install_cmd: 'make -C Core install'
+  serapi_options: '-R Core,DiSeL'
+  ignore_path_regex: 'Core/InjectionOld\.v|Examples/.*'
+  group: 't3'
+
+- full_name: palmskog_coq-reglang
+  short_name: reglang
+  id: reglang
+  url: https://github.com/palmskog/coq-reglang
+  sha: da333e01771f41debc3086a06e45d1393533d5c4
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R theories,RegLang'
+  group: 't3'
+
+- full_name: palmskog_comp-dec-pdl
+  short_name: comp-dec-pdl
+  id: compdecpdl
+  url: https://github.com/palmskog/comp-dec-pdl
+  sha: c1f813b8c97805e3c676cb559d0eab8381988a8a
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,CDPDL'
+  group: 't3'
+
+- full_name: math-comp_odd-order
+  short_name: odd-order
+  id: oddorder
+  url: https://github.com/math-comp/odd-order
+  sha: ca602a4638a9fe8ac30780095543d861f60fbfa0
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R theories,odd_order'
+  group: 't1'
+
+- full_name: math-comp_fourcolor
+  short_name: fourcolor
+  id: fourcolor
+  url: https://github.com/math-comp/fourcolor
+  sha: 0851d498d9a06ab81cf978494b6d41fbeb5f6631
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R theories,fourcolor'
+  ignore_path_regex: 'theories/(job|task)\d{3}to\d{3}\.v'
+  group: 't1'
+
+- full_name: math-comp_finmap
+  short_name: finmap
+  id: finmap
+  url: https://github.com/math-comp/finmap
+  sha: 27642a81f796def99f050f2b3af41c275eac889f
+  tag: '1.2.1'
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,mathcomp.finmap'
+  group: 't1'
+
+- full_name: math-comp_bigenough
+  short_name: bigenough
+  id: bigenough
+  url: https://github.com/math-comp/bigenough
+  sha: 5f79a32ab69e255b9313b1e0d91577066d02bee6
+  tag: '1.0.0'
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make'
+  install_cmd: 'make install'
+  serapi_options: '-R .,mathcomp.bigenough'
+  group: 't2'
+
+- full_name: math-comp_analysis
+  short_name: analysis
+  id: analysis
+  url: https://github.com/math-comp/analysis
+  sha: 9e5fe1dfa8faca954ba1c74ed301276d0e9d8339
+  tag: '0.2.2'
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_finmap
+  - math-comp_bigenough  
+  build_cmd: 'make INSTMODE=global config && make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,mathcomp.analysis'
+  ignore_path_regex: 'misc/uniform_bigO\.v|altreals/dedekind\.v'
+  group: 't2'
+
+- full_name: math-comp_real-closed
+  short_name: real-closed
+  id: realclosed
+  url: https://github.com/math-comp/real-closed
+  sha: 495a1faf3a13f5a5587646b6ba46061cfdeca33b
+  tag: '1.0.3'
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_bigenough
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R theories,mathcomp.real_closed'
+  group: 't2'
+
+- full_name: affeldt-aist_coq-robot
+  short_name: robot
+  id: robot
+  url: https://github.com/affeldt-aist/coq-robot
+  sha: b341ad1dbbd7d693a1672084c97876b145792683
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_analysis
+  - math-comp_real-closed
+  build_cmd: 'coq_makefile -f _CoqProject -o Makefile && make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,robot'
+  ignore_path_regex: 'cross_product\.v'
+  group: 't2'
+
+- full_name: math-comp_multinomials
+  short_name: multinomials
+  id: multinomials
+  url: https://github.com/math-comp/multinomials
+  sha: 691d7954d3e08db172784f3e4fffe2367cd08c95
+  tag: '1.3'
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_bigenough
+  - math-comp_finmap
+  build_cmd: 'make INSTMODE=global config && make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R src,SsrMultinomials'
+  group: 't2'
+
+- full_name: strub_elliptic-curves-ssr
+  short_name: elliptic-curves
+  id: ellipticcurves
+  url: https://github.com/strub/elliptic-curves-ssr
+  sha: 631af893e591466207929714c45b5f7476d579d0
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_multinomials
+  - math-comp_real-closed
+  build_cmd: 'make config && make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R 3rdparty,SsrEllipticCurves -R common,SsrEllipticCurves -R src,SsrEllipticCurves'
+  group: 't2'
+
+- full_name: certichain_toychain
+  short_name: toychain
+  id: toychain
+  url: https://github.com/certichain/toychain
+  sha: 97bd6972f8d59eb1a56a429d59bfe10a0de6a281
+  dependencies:
+  - math-comp_math-comp
+  - imdea-software_fcsl-pcm
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-Q Structures,Toychain -Q Systems,Toychain -Q Properties,Toychain -Q Extraction,Toychain'
+  group: 't3'
+
+- full_name: coq-community_coq-bits
+  short_name: bits
+  id: bits
+  url: https://github.com/coq-community/coq-bits
+  sha: 3cd298ac7718305da6d22eaa5872b7e63651dbd0
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R src,Bits'
+  ignore_path_regex: 'test/.*'
+  group: 't3'
+
+- full_name: thery_twoSquare
+  short_name: two-square
+  id: twosquare
+  url: https://github.com/thery/twoSquare
+  sha: 1c09aca1080f36ec24276a2025cf87a25efdd29e
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,mathcomp.contrib.sum_of_two_square'
+  group: 't2'
+
+- full_name: thery_grobner
+  short_name: grobner
+  id: grobner
+  url: https://github.com/thery/grobner
+  sha: dfa54f9c2cd2a3913cfa4705efd9307b340197a4
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_multinomials
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,mathcomp.contrib.grobner'
+  group: 't2'
+
+- full_name: palmskog_infotheo
+  short_name: infotheo
+  id: infotheo
+  url: https://github.com/palmskog/infotheo
+  sha: 6c1724247583d084b05b092e79921465a9510e2e
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_analysis
+  build_cmd: 'coq_makefile -f _CoqProject -o Makefile && make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,infotheo'
+  group: 'lo'
+
+- full_name: palmskog_monae
+  short_name: monae
+  id: monae
+  url: https://github.com/palmskog/monae
+  sha: 9d0e461695e27059022271b304b75ac1bab70d3f
+  dependencies:
+  - math-comp_math-comp
+  - math-comp_analysis
+  - palmskog_infotheo
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,monad'
+  group: 't3'
+
+- full_name: gstew5_games
+  short_name: games
+  id:  games
+  url: https://github.com/gstew5/games
+  sha: 3d3bd31c7e4d1ea6f4b5a6815bca5c0a039b204f
+  dependencies:
+  - math-comp_math-comp
+  build_cmd: 'make -j8'
+  install_cmd: 'make install'
+  serapi_options: '-R .,Games'
+  group: 't3'

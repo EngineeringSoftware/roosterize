@@ -1,0 +1,10 @@
+[
+    "palmskog_infotheo/ecc_modern/ldpc_algo_proof.v",
+    "palmskog_infotheo/lib/arg_rmax.v",
+    "palmskog_infotheo/probability/partition_inequality.v",
+    "palmskog_infotheo/ecc_modern/subgraph_partition.v",
+    "palmskog_infotheo/probability/pinsker_function.v",
+    "palmskog_infotheo/probability/ln_facts.v",
+    "palmskog_infotheo/ecc_classic/grs.v",
+    "palmskog_infotheo/lib/bigop_ext.v"
+]
