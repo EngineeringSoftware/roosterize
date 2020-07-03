@@ -45,7 +45,8 @@ Then, install PyTorch by following the instructions
 the installation command suitable for your operating system, Python
 package manager, and whether you want to use it on a CPU or GPU.
 
-Next, clone the Roosterize repository and enter the directory:
+Next, either download a Roosterize [release][releases-link]
+or clone the Roosterize repository and enter the directory:
 ```
 git clone https://github.com/EngineeringSoftware/roosterize.git
 cd roosterize
@@ -57,15 +58,18 @@ Python installation):
 pip install -r requirements.txt
 ```
 
+[releases-link]: https://github.com/EngineeringSoftware/roosterize/releases
+
 ### Download pre-trained models
 
-Roosterize's pre-trained models are available via this Google Drive
-[link](https://drive.google.com/file/d/1L0-BMOrP0WYX7L1bAhKRkJPLm7VPeMsE/view?usp=sharing).
-Download the file `models.tgz` from the link and put it under this
-directory, then uncompress the file:
+Roosterize's pre-trained models are available for separate [download][models-link].
+Put the archive with the models (`models.tgz`) in the `roosterize`
+directory, and then uncompress it:
 ```
 tar xzf models.tgz
 ```
+
+[models-link]: https://github.com/EngineeringSoftware/roosterize/releases/download/v8.10.0/models.tgz
 
 ### Usage
 
@@ -74,7 +78,11 @@ build and install the project with the command provided by the project
 (usually `make` followed by `make install`). Then, at the root directory of
 the project repository, run the command
 ```
-python -m roosterize.main suggest_lemmas --project=$PATH_TO_PROJECT --serapi_options=$SERAPI_OPTIONS --model-dir=./models/roosterize-ta --output=./output
+python -m roosterize.main suggest_lemmas \
+ --project=$PATH_TO_PROJECT \
+ --serapi_options=$SERAPI_OPTIONS \
+ --model-dir=./models/roosterize-ta \
+ --output=./output
 ```
 where `$PATH_TO_PROJECT` should be replaced with the path to the
 project, and `$SERAPI_OPTIONS` should be replaced with the SerAPI
