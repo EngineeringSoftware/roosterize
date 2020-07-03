@@ -456,7 +456,7 @@ class DataMiner:
         # Assign uids
         for lemma_i, lemma in enumerate(lemmas):  lemma.uid = lemma_i
 
-        data_mgr.dump_data([FilesManager.LEMMAS, "lemmas"], lemmas, IOUtils.Format.json, is_batched=True, per_batch=5000)
+        data_mgr.dump_data([FilesManager.LEMMAS], lemmas, IOUtils.Format.json, is_batched=True, per_batch=5000)
         return
 
     @classmethod
@@ -468,7 +468,7 @@ class DataMiner:
         data_mgr.resolve([FilesManager.LEMMAS_FILTERED]).mkdir(parents=True)
 
         # Load lemmas
-        lemmas: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS, "lemmas"], IOUtils.Format.json, is_batched=True, clz=Lemma)
+        lemmas: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS], IOUtils.Format.json, is_batched=True, clz=Lemma)
         heights: List[int] = [l.backend_sexp.height() for l in lemmas]
 
         depth_cutoff_point = sorted(heights)[int(np.ceil(Macros.LEMMAS_DEPTH_CUTOFF * len(lemmas)))]
@@ -480,7 +480,7 @@ class DataMiner:
         # Assign uids
         for lemma_i, lemma in enumerate(lemmas_filtered):  lemma.uid = lemma_i
 
-        data_mgr.dump_data([FilesManager.LEMMAS_FILTERED, "lemmas"], lemmas_filtered, IOUtils.Format.json, is_batched=True, per_batch=5000)
+        data_mgr.dump_data([FilesManager.LEMMAS_FILTERED], lemmas_filtered, IOUtils.Format.json, is_batched=True, per_batch=5000)
         return
 
     @classmethod
@@ -529,7 +529,7 @@ class DataMiner:
         # Increase recursion limit because the backend sexps are CRAZZZZY deep
         sys.setrecursionlimit(10000)
 
-        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED, "lemmas"], IOUtils.Format.json, is_batched=True, clz=Lemma)
+        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED], IOUtils.Format.json, is_batched=True, clz=Lemma)
 
         # Main stream transformations, applied one after another
         levels_lemmas_bsexp_transformed: Dict[str, List[SexpNode]] = dict()
@@ -573,7 +573,7 @@ class DataMiner:
         # Increase recursion limit because the backend sexps are CRAZZZZY deep
         sys.setrecursionlimit(10000)
 
-        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED, "lemmas"], IOUtils.Format.json, is_batched=True, clz=Lemma)
+        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED], IOUtils.Format.json, is_batched=True, clz=Lemma)
 
         # Main stream transformations, applied one after another
         levels_lemmas_fsexp_transformed: Dict[str, List[SexpNode]] = dict()
@@ -857,14 +857,14 @@ class DataMiner:
         data_mgr = FilesManager(corpus_path)
 
         # 2. Load lemmas and definitions
-        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED, "lemmas"], IOUtils.Format.json, is_batched=True, clz=Lemma)
+        lemmas_filtered: List[Lemma] = data_mgr.load_data([FilesManager.LEMMAS_FILTERED], IOUtils.Format.json, is_batched=True, clz=Lemma)
         definitions: List[Definition] = data_mgr.load_data([FilesManager.DEFINITIONS, "definitions.json"], IOUtils.Format.json, clz=Definition)
 
         # 3. Output to output_path for each combination of traineval and group
         for traineval in trainevals:
             for group in groups:
                 IOUtils.mk_dir(output_path/f"{group}-{traineval}")
-                data_indexes = data_mgr.load_data([FilesManager.DATA_INDEXES, f"{group}-{traineval}.json"], IOUtils.Format.json, clz=str)
+                data_indexes = IOUtils.load(project_dir/"training"/f"{group}-{traineval}.json"], IOUtils.Format.json, clz=str)
                 IOUtils.dump(output_path/f"{group}-{traineval}/lemmas.json", IOUtils.jsonfy([l for l in lemmas_filtered if l.data_index in data_indexes]), IOUtils.Format.json)
                 IOUtils.dump(output_path/f"{group}-{traineval}/definitions.json", IOUtils.jsonfy([d for d in definitions if d.data_index in data_indexes]), IOUtils.Format.json)
             # end for

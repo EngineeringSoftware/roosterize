@@ -1,0 +1,20 @@
+[
+    "math-comp_odd-order/theories/PFsection3.v",
+    "math-comp_fourcolor/theories/combinatorial4ct.v",
+    "math-comp_math-comp/mathcomp/character/vcharacter.v",
+    "math-comp_math-comp/mathcomp/ssreflect/div.v",
+    "math-comp_math-comp/mathcomp/algebra/ssralg.v",
+    "math-comp_fourcolor/theories/realprop.v",
+    "math-comp_math-comp/mathcomp/field/finfield.v",
+    "math-comp_math-comp/mathcomp/solvable/primitive_action.v",
+    "math-comp_fourcolor/theories/contract.v",
+    "math-comp_math-comp/mathcomp/ssreflect/all_ssreflect.v",
+    "math-comp_fourcolor/theories/kempe.v",
+    "math-comp_math-comp/mathcomp/algebra/finalg.v",
+    "math-comp_fourcolor/theories/quiztree.v",
+    "math-comp_math-comp/mathcomp/fingroup/automorphism.v",
+    "math-comp_odd-order/theories/PFsection8.v",
+    "math-comp_fourcolor/theories/reducibility.v",
+    "math-comp_odd-order/theories/BGappendixAB.v",
+    "math-comp_math-comp/mathcomp/ssreflect/binomial.v"
+]

@@ -2,6 +2,9 @@
 
 Roosterize is a tool for suggesting lemma names in verification
 projects that use the [Coq proof assistant](https://coq.inria.fr).
+The tool is based on leveraging neural networks that take serialized Coq
+lemma statements and elaborated terms as input; see the [Technique](#Technique)
+section below.
 
 ## Requirements
 
@@ -78,7 +81,7 @@ project, and `$SERAPI_OPTIONS` should be replaced with the SerAPI
 command line options for mapping logical paths to directories (see [SerAPI's
 documentation](https://github.com/ejgallego/coq-serapi/blob/v8.11/FAQ.md#does-serapi-support-coqs-command-line-flags)).
 For example, if the logical path (inside Coq) for the project is `Verified`,
-you should set `SERAPI_OPTIONS="-Q $PATH_TO_PROJECT,Verified"`.
+you should set `SERAPI_OPTIONS="-R $PATH_TO_PROJECT,Verified"`.
 
 The command extracts all lemmas from the project, uses Roosterize's
 pre-trained model (at `./models/roosterize-ta`) to predict a lemma name
@@ -90,8 +93,6 @@ Below is an example of printed suggestions:
 infotheo/ecc_classic/bch.v: infotheo.ecc_classic.bch.BCH.BCH_PCM_altP1 -> inde_F2
 infotheo/ecc_classic/bch.v: infotheo.ecc_classic.bch.BCH.BCH_PCM_altP2 -> inde_mul
 infotheo/ecc_classic/bch.v: infotheo.ecc_classic.bch.BCH.PCM_altP -> F2_eq0
-infotheo/ecc_classic/bch.v: infotheo.ecc_classic.bch.BCH.PCM_alt_GRS -> P
-infotheo/ecc_classic/bch.v: infotheo.ecc_classic.bch.BCH_codebook -> map_P
 ...
 ```
 
@@ -109,7 +110,7 @@ For example, the Coq lemma sentence
 ```coq
 Lemma mg_eq_proof L1 L2 (N1 : mgClassifier L1) : L1 =i L2 -> nerode L2 N1.
 ```
-is serialized into the following tokens:
+is serialized into the following tokens (simplified):
 ```lisp
 (Sentence((IDENT Lemma)(IDENT mg_eq_proof)(IDENT L1)(IDENT L2)
   (KEYWORD"(")(IDENT N1)(KEYWORD :)(IDENT mgClassifier)
@@ -134,7 +135,8 @@ architecture, as applied to this example:
 Our [research paper][arxiv-paper] outlines the design of Roosterize,
 and describes an evaluation on a [corpus][math-comp-corpus]
 of serialized Coq code derived from the [Mathematical Components][math-comp-website]
-family of projects.
+family of projects. The training, validation, and testing sets of Coq files from the corpus
+used in the evaluation are defined in the `training` directory.
 
 If you have used Roosterize in a research project, please cite
 the research paper in any related publication:

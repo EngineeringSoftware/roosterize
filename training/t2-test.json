@@ -1,0 +1,6 @@
+[
+    "strub_elliptic-curves-ssr/src/ecgroup.v",
+    "math-comp_real-closed/theories/polyorder.v",
+    "math-comp_analysis/altreals/xfinmap.v",
+    "affeldt-aist_coq-robot/scara.v"
+]

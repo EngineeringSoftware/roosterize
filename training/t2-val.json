@@ -1,0 +1,9 @@
+[
+    "math-comp_multinomials/src/monalg.v",
+    "math-comp_analysis/summability.v",
+    "affeldt-aist_coq-robot/rigid.v",
+    "strub_elliptic-curves-ssr/common/polyall.v",
+    "strub_elliptic-curves-ssr/3rdparty/polyorder.v",
+    "math-comp_real-closed/theories/qe_rcf.v",
+    "math-comp_analysis/boolp.v"
+]

@@ -1,0 +1,19 @@
+[
+    "math-comp_math-comp/mathcomp/ssreflect/path.v",
+    "math-comp_math-comp/mathcomp/solvable/sylow.v",
+    "math-comp_fourcolor/theories/initgtree.v",
+    "math-comp_math-comp/mathcomp/field/falgebra.v",
+    "math-comp_fourcolor/theories/grid.v",
+    "math-comp_fourcolor/theories/fourcolor.v",
+    "math-comp_math-comp/mathcomp/algebra/intdiv.v",
+    "math-comp_odd-order/theories/BGsection12.v",
+    "math-comp_odd-order/theories/BGsection8.v",
+    "math-comp_fourcolor/theories/finitize.v",
+    "math-comp_math-comp/mathcomp/algebra/ssrint.v",
+    "math-comp_fourcolor/theories/ctreerestrict.v",
+    "math-comp_math-comp/mathcomp/ssreflect/ssrmatching.v",
+    "math-comp_math-comp/mathcomp/character/classfun.v",
+    "math-comp_odd-order/theories/BGsection2.v",
+    "math-comp_fourcolor/theories/discretize.v",
+    "math-comp_math-comp/mathcomp/algebra/mxalgebra.v"
+]
