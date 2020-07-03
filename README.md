@@ -63,7 +63,7 @@ pip install -r requirements.txt
 ### Download pre-trained models
 
 Roosterize's pre-trained models are available for separate [download][models-link].
-Put the archive with the models (`models.tgz`) in the `roosterize`
+Put the archive with the models (`models.tgz`) in the Roosterize root
 directory, and then uncompress it:
 ```
 tar xzf models.tgz
