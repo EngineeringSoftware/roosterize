@@ -2,7 +2,7 @@
 
 Roosterize is a tool for suggesting lemma names in verification
 projects that use the [Coq proof assistant](https://coq.inria.fr).
-The tool is based on leveraging neural networks that take serialized Coq
+The tool leverages neural networks that take serialized Coq
 lemma statements and elaborated terms as input; see the [Technique](#Technique)
 section below.
 
@@ -62,7 +62,10 @@ pip install -r requirements.txt
 
 ### Download pre-trained models
 
-Roosterize's pre-trained models are available for separate [download][models-link].
+We have trained several models using our [corpus][math-comp-corpus], which
+follows the lemma naming conventions used in the [Mathematical Components][math-comp-website]
+family of projects. The pre-trained models are available for separate [download][models-link].
+
 Put the archive with the models (`models.tgz`) in the Roosterize root
 directory, and then uncompress it:
 ```
@@ -153,7 +156,8 @@ the research paper in any related publication:
   author = {Nie, Pengyu and Palmskog, Karl and Li, Junyi Jessy and Gligoric, Milos},
   title = {Deep Generation of {Coq} Lemma Names Using Elaborated Terms},
   booktitle = {International Joint Conference on Automated Reasoning},
-  pages = {To appear},
+  pages = {97--118},
+  doi = {10.1007/978-3-030-51054-1_6},
   year = {2020},
 }
 ```
