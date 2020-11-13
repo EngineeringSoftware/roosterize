@@ -864,7 +864,7 @@ class DataMiner:
         for traineval in trainevals:
             for group in groups:
                 IOUtils.mk_dir(output_path/f"{group}-{traineval}")
-                data_indexes = IOUtils.load(project_dir/"training"/f"{group}-{traineval}.json"], IOUtils.Format.json, clz=str)
+                data_indexes = IOUtils.load(Macros.project_dir/"training"/f"{group}-{traineval}.json", IOUtils.Format.json)
                 IOUtils.dump(output_path/f"{group}-{traineval}/lemmas.json", IOUtils.jsonfy([l for l in lemmas_filtered if l.data_index in data_indexes]), IOUtils.Format.json)
                 IOUtils.dump(output_path/f"{group}-{traineval}/definitions.json", IOUtils.jsonfy([d for d in definitions if d.data_index in data_indexes]), IOUtils.Format.json)
             # end for
