@@ -83,7 +83,7 @@ the project repository, run the command
 ```
 python -m roosterize.main suggest_lemmas \
  --project=$PATH_TO_PROJECT \
- --serapi_options=$SERAPI_OPTIONS \
+ --serapi-options=$SERAPI_OPTIONS \
  --model-dir=./models/roosterize-ta \
  --output=./output
 ```
