@@ -691,7 +691,7 @@ class DataMiner:
         lemma_qnames_file = BashUtils.get_temp_file()
         IOUtils.dump(lemma_qnames_file, lemma_qnames, IOUtils.Format.txt)
 
-        lemma_qnames_backend_sexps_str: str = BashUtils.run(f"sername --require-lib={qprefix_this_doc} {lemma_qnames_file}", expected_return_code=0).stdout
+        lemma_qnames_backend_sexps_str: str = BashUtils.run(f"sername {serapi_options} --require-lib={qprefix_this_doc} {lemma_qnames_file}", expected_return_code=0).stdout
         IOUtils.rm(lemma_qnames_file)
         for qname_backend_sexp_str in lemma_qnames_backend_sexps_str.splitlines():
             qname, backend_sexp_str = qname_backend_sexp_str.split(":", 1)
