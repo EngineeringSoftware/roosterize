@@ -5,11 +5,12 @@ _DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # This script is for preparing the releases, conda environments, etc.
 
 
-CONDA_PATH="$HOME/opt/anaconda3/etc/profile.d/conda.sh"
+DEFAULT_CONDA_PATH="$HOME/opt/anaconda3/etc/profile.d/conda.sh"
 
 
 function prepare_conda_env_cpu() {
-        source ${CONDA_PATH}
+        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        source ${conda_path}
         conda env remove --name roosterize-cpu
         conda create --name roosterize-cpu python=3.7 pip -y
         conda activate roosterize-cpu
@@ -20,7 +21,8 @@ function prepare_conda_env_cpu() {
 
 
 function prepare_conda_env_gpu_cuda10() {
-        source ${CONDA_PATH}
+        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        source ${conda_path}
         conda env remove --name roosterize-gpu
         conda create --name roosterize-gpu python=3.7 pip -y
         conda activate roosterize-gpu
@@ -31,7 +33,8 @@ function prepare_conda_env_gpu_cuda10() {
 
 
 function prepare_conda_env_gpu_cuda9() {
-        source ${CONDA_PATH}
+        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        source ${conda_path}
         conda env remove --name roosterize-gpu
         conda create --name roosterize-gpu python=3.7 pip -y
         conda activate roosterize-gpu
@@ -43,7 +46,8 @@ function prepare_conda_env_gpu_cuda9() {
 
 function prepare_conda_env_mac() {
         # This needs to be executed on a Mac
-        source ${CONDA_PATH}
+        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        source ${conda_path}
         conda env remove --name roosterize-mac
         conda create --name roosterize-mac python=3.7 pip -y
         conda activate roosterize-mac
@@ -60,7 +64,8 @@ function package_dist() {
         #
         # requirements.txt contains the right CPU-only pytorch
         # packages for installation
-        source ${CONDA_PATH}
+        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        source ${conda_path}
         conda env remove --name roosterize-package
         conda create --name roosterize-package python=3.7 pip -y
         conda activate roosterize-package
