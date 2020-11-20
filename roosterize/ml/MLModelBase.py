@@ -20,10 +20,13 @@ class MLModelBase(Generic[TConfig]):
 
     logger = LoggingUtils.get_logger(__name__)
 
-    def __init__(self,
+    def __init__(
+            self,
+            model_dir: Path,
             model_spec: ModelSpec,
             config_clz: type,
     ):
+        self.model_dir = model_dir
         self.spec = model_spec
         self.config: TConfig = IOUtils.dejsonfy(model_spec.config_dict, config_clz) if model_spec.config_dict is not None else config_clz()
 
@@ -35,7 +38,8 @@ class MLModelBase(Generic[TConfig]):
         return f"Model {self.spec.model}/{str(self.config)}: "
 
     @abc.abstractmethod
-    def process_data_impl(self,
+    def process_data_impl(
+            self,
             data_dir: Path,
             output_processed_data_dir: Path,
     ) -> NoReturn:
@@ -58,7 +62,8 @@ class MLModelBase(Generic[TConfig]):
         """
         pass
 
-    def process_data(self,
+    def process_data(
+            self,
             data_dir: Path,
             output_processed_data_dir: Path,
             is_train: bool = False,
@@ -79,26 +84,25 @@ class MLModelBase(Generic[TConfig]):
         return
 
     @abc.abstractmethod
-    def train_impl(self,
+    def train_impl(
+            self,
             train_processed_data_dir: Path,
             val_processed_data_dir: Path,
-            output_model_dir: Path,
     ) -> NoReturn:
         """
         Trains the data on the input processed data.
 
         :param train_processed_data_dir: the directory containing the processed train data
         :param val_processed_data_dir: the directory containing the processed val data
-        :param output_model_dir: the directory to save the output model
         """
         pass
 
     TRAINING_COMPLETED_FILE_NAME = "training-completed.txt"
 
-    def train(self,
+    def train(
+            self,
             train_processed_data_dir: Path,
             val_processed_data_dir: Path,
-            output_model_dir: Path,
             force_retrain: bool = False,
     ) -> NoReturn:
         """
@@ -109,45 +113,44 @@ class MLModelBase(Generic[TConfig]):
 
         :param train_processed_data_dir: the directory containing the processed train data
         :param val_processed_data_dir: the directory containing the processed val data
-        :param output_model_dir: the directory to save the output model
         :param force_retrain: if set to True, re-train the model even if it was already trained (will remove previously trained model)
         """
-        if force_retrain or not self.is_training_completed(output_model_dir):
-            self.logger.info(self.logging_prefix + f"Training model at {output_model_dir}; train: {train_processed_data_dir}, val: {val_processed_data_dir}")
-            IOUtils.rm_dir(output_model_dir)
-            IOUtils.mk_dir(output_model_dir)
+        if force_retrain or not self.is_training_completed():
+            self.logger.info(self.logging_prefix + f"Training model at {self.model_dir}; train: {train_processed_data_dir}, val: {val_processed_data_dir}")
+            IOUtils.rm_dir(self.model_dir)
+            IOUtils.mk_dir(self.model_dir)
 
             # Save spec & configs of this model
-            IOUtils.dump(output_model_dir/"config-dict.json", IOUtils.jsonfy(self.config), IOUtils.Format.jsonPretty)
-            IOUtils.dump(output_model_dir/"spec.json", IOUtils.jsonfy(self.spec), IOUtils.Format.jsonPretty)
-            self.train_impl(train_processed_data_dir, val_processed_data_dir, output_model_dir)
-            IOUtils.dump(output_model_dir / self.TRAINING_COMPLETED_FILE_NAME, str(time.time_ns()), IOUtils.Format.txt)
+            IOUtils.dump(self.model_dir/"config-dict.json", IOUtils.jsonfy(self.config), IOUtils.Format.jsonPretty)
+            IOUtils.dump(self.model_dir/"spec.json", IOUtils.jsonfy(self.spec), IOUtils.Format.jsonPretty)
+            self.train_impl(train_processed_data_dir, val_processed_data_dir)
+            IOUtils.dump(self.model_dir / self.TRAINING_COMPLETED_FILE_NAME, str(time.time_ns()), IOUtils.Format.txt)
         # end if
         return
 
-    def is_training_completed(self, model_dir: Path) -> bool:
+    def is_training_completed(self) -> bool:
         """
         Checks if there already existed a completely-trained model in model_dir.
         """
-        return (model_dir/self.TRAINING_COMPLETED_FILE_NAME).is_file()
+        return (self.model_dir/self.TRAINING_COMPLETED_FILE_NAME).is_file()
 
     @abc.abstractmethod
-    def eval(self,
+    def eval(
+            self,
             processed_data_dir: Path,
-            model_dir: Path,
             output_result_dir: Path,
     ) -> NoReturn:
         """
         Evaluates the model on the specified provided data.
 
         :param processed_data_dir: the directory to processed training data
-        :param model_dir: the directory containing the trained model
         :param output_result_dir: the directory to save output result files
         """
         pass
 
     @abc.abstractmethod
-    def combine_eval_results_trials(self,
+    def combine_eval_results_trials(
+            self,
             result_dirs: List[Path],
             output_result_dir: Path,
     ) -> NoReturn:
@@ -157,7 +160,8 @@ class MLModelBase(Generic[TConfig]):
         pass
 
     @abc.abstractmethod
-    def error_analyze(self,
+    def error_analyze(
+            self,
             data_dir: Path,
             processed_data_dir: Path,
             result_dir: Path,
@@ -177,7 +181,8 @@ class MLModelBase(Generic[TConfig]):
         pass
 
     @abc.abstractmethod
-    def get_best_trial(self,
+    def get_best_trial(
+            self,
             result_dirs: List[Path],
     ) -> Path:
         pass

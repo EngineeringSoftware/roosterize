@@ -1,24 +1,13 @@
-from pathlib import Path
-import pkg_resources
 import random
 import sys
 import time
+from pathlib import Path
 
-from seutil import LoggingUtils, CliUtils, IOUtils
+from seutil import CliUtils, IOUtils, LoggingUtils
 
-from roosterize.Macros import Macros
 from roosterize.Environment import Environment
+from roosterize.Macros import Macros
 from roosterize.Utils import Utils
-
-
-# Check seutil version
-EXPECTED_SEUTIL_VERSION = "0.4.12"
-if pkg_resources.get_distribution("seutil").version < EXPECTED_SEUTIL_VERSION:
-    print(f"seutil version does not meet expectation! Expected version: {EXPECTED_SEUTIL_VERSION}, current installed version: {pkg_resources.get_distribution('seutil').version}", file=sys.stderr)
-    print(f"Hint: either upgrade seutil, or modify the expected version (after confirmation that the version will work)", file=sys.stderr)
-    sys.exit(-1)
-# end if
-
 
 logging_file = Macros.this_dir.parent / "experiment.log"
 LoggingUtils.setup(filename=str(logging_file))
@@ -79,15 +68,15 @@ def train_model(**options):
     model_spec = ModelSpec.build_from_dict(options)
 
     # Get the ML model
-    model = MLModels.get_model(model_spec)
+    model = MLModels.get_model(model_dir, model_spec)
 
     # Process data
     model.process_data(train_data_dir, output_dir/"train-processed-data", is_train=True)
     model.process_data(val_data_dir, output_dir/"val-processed-data")
 
     # Train & eval the ML model on val set
-    model.train(output_dir/"train-processed-data", output_dir/"val-processed-data", model_dir, force_retrain=force_retrain)
-    model.eval(output_dir/"val-processed-data", model_dir, output_dir/"val-eval-result")
+    model.train(output_dir/"train-processed-data", output_dir/"val-processed-data", force_retrain=force_retrain)
+    model.eval(output_dir/"val-processed-data", output_dir/"val-eval-result")
     return
 
 
@@ -101,14 +90,15 @@ def eval_model(**options):
 
     # Get the ML model
     model_spec = IOUtils.dejsonfy(IOUtils.load(model_dir/"spec.json", IOUtils.Format.json), ModelSpec)
-    model = MLModels.get_model(model_spec, is_eval=True)
+    model = MLModels.get_model(model_dir, model_spec, is_eval=True)
 
     # Process data
     model.process_data(data_dir, output_dir/"eval-processed-data")
 
     # Eval
-    model.eval(output_dir/"eval-processed-data", model_dir, output_dir/"eval-result")
+    model.eval(output_dir/"eval-processed-data", output_dir/"eval-result")
     return
+
 
 def suggest_lemmas(**options):
     from roosterize.data.DataMiner import DataMiner
@@ -130,7 +120,7 @@ def suggest_lemmas(**options):
     # Get the ML model
     print(">>>>> Initializing model ...")
     model_spec = IOUtils.dejsonfy(IOUtils.load(model_dir/"spec.json", IOUtils.Format.json), ModelSpec)
-    model = MLModels.get_model(model_spec, is_eval=True)
+    model = MLModels.get_model(model_dir, model_spec, is_eval=True)
 
     # Process data
     print(">>>>> Processing data ...")
@@ -138,12 +128,47 @@ def suggest_lemmas(**options):
 
     # Eval
     print(">>>>> Applying model ...")
-    model.eval(output_dir/"eval-processed-data", model_dir, output_dir/"eval-result")
+    model.eval(output_dir/"eval-processed-data", output_dir/"eval-result")
 
     # Print suggestions
     print(">>>>> Suggestions:")
     print(IOUtils.load(output_dir/"eval-result"/"suggestions.txt", IOUtils.Format.txt))
     return
+
+
+# User interfaces
+
+def download_global_model(**options):
+    from roosterize.interface.CommandLineInterface import CommandLineInterface
+    ui = CommandLineInterface()
+    force_yes = Utils.get_option_as_boolean(options, "y")
+    ui.download_global_model(force_yes)
+
+
+def suggest_naming(**options):
+    from roosterize.interface.CommandLineInterface import CommandLineInterface
+    file_path = Path(options["file"])
+    prj_root = options.get("project_root", None)
+    if prj_root is not None:
+        prj_root = Path(prj_root)
+    ui = CommandLineInterface()
+    ui.suggest_naming(file_path, prj_root)
+
+
+def improve_project_model(**options):
+    # TODO: future work
+    raise NotImplementedError("Improve_project_model feature will be enabled in the future.")
+    from roosterize.interface.CommandLineInterface import CommandLineInterface
+    prj_root = options.get("project_root", None)
+    if prj_root is not None:
+        prj_root = Path(prj_root)
+    ui = CommandLineInterface()
+    ui.improve_project_model(prj_root)
+
+
+def vscode_server(**options):
+    from roosterize.interface.VSCodeServer import start_server
+    start_server(**options)
 
 
 def help(**options):
