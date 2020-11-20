@@ -85,14 +85,14 @@ class CommandLineInterface:
         # First, load global config
         global_config_file = RoosterizeDirUtils.get_global_config_file()
         if global_config_file.exists():
-            global_config = IOUtils.load(global_config_file, IOUtils.Format.json)
+            global_config = IOUtils.load(global_config_file, IOUtils.Format.yaml)
             self.set_configs_from_dict(global_config, self.GLOBAL_CONFIGS)
 
         # Then, load local config
         if prj_root is not None:
             local_config_file = RoosterizeDirUtils.get_local_config_file(prj_root)
             if local_config_file.exists():
-                local_config = IOUtils.load(local_config_file, IOUtils.Format.json)
+                local_config = IOUtils.load(local_config_file, IOUtils.Format.yaml)
                 self.set_configs_from_dict(local_config, self.LOCAL_CONFIGS)
 
             self.loaded_config_prj = prj_root
