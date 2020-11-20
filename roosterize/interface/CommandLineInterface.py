@@ -99,7 +99,8 @@ class CommandLineInterface:
 
     def set_configs_from_dict(self, d: dict, fields: List[str]):
         for f in fields:
-            setattr(self, f, d[f])
+            if f in d:
+                setattr(self, f, d[f])
 
     def download_global_model(self, force_yes: bool = False):
         """
