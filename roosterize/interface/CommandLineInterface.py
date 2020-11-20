@@ -47,6 +47,7 @@ class CommandLineInterface:
         "serapi_options",
         "exclude_files",
         "exclude_pattern",
+        "compile_cmd",
     ]
 
     def __init__(self):
@@ -61,6 +62,7 @@ class CommandLineInterface:
         self.exclude_pattern = None
         self.serapi_options = None
         self.model_url = "https://github.com/EngineeringSoftware/roosterize/releases/download/v1.1.0+8.10.0/roosterize-model-t1.tgz"
+        self.compile_cmd = None
         self.loaded_config_prj: Path = None
 
         self.load_configs()
@@ -167,6 +169,11 @@ class CommandLineInterface:
 
         # Infer SerAPI options
         serapi_options = self.infer_serapi_options(prj_root)
+
+        # If user provided compile_cmd, first compile the project
+        if self.compile_cmd is not None:
+            with IOUtils.cd(prj_root):
+                BashUtils.run(self.compile_cmd, expected_return_code=0)
 
         # Parse file
         data = self.parse_file(file_path, prj_root, serapi_options)
