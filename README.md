@@ -11,21 +11,21 @@ section below.
 - [OCaml 4.07.1](https://ocaml.org)
 - [SerAPI 0.7.1](https://github.com/ejgallego/coq-serapi)
 - [Coq 8.10.2](https://coq.inria.fr/download)
-- [Python 3.7.7+](https://www.python.org)
+- [Python 3.7](https://www.python.org)
 - [PyTorch 1.1.0](https://pytorch.org/get-started/previous-versions/#v110)
 
-## Installation and usage
+## Installation
 
 ### Installation of OCaml, Coq, and SerAPI
 
 We strongly recommend installing the required versions of OCaml, Coq,
 and SerAPI via the [OPAM package manager](https://opam.ocaml.org),
-version 2.0.6 or later.
+version 2.0.7 or later.
 
 To set up the OPAM-based OCaml environment, use:
 ```
-opam switch create 4.07.1
-opam switch 4.07.1
+opam switch create roosterize 4.07.1
+opam switch roosterize
 eval $(opam env)
 ```
 Then, install Coq and SerAPI, pinning them to avoid unintended upgrades:
@@ -35,51 +35,60 @@ opam pin add coq 8.10.2
 opam pin add coq-serapi 8.10.0+0.7.1
 ```
 
-### Installation of Python and PyTorch
+### Installation of PyTorch and Python libraries
 
-We recommend installing the required versions of Python and PyTorch
+We strongly recommend installing the required versions of Python and PyTorch
 using [Conda](https://docs.conda.io/en/latest/miniconda.html).
 
-Then, install PyTorch by following the instructions
-[here](https://pytorch.org/get-started/previous-versions/#v110), using
-the installation command suitable for your operating system, Python
-package manager, and whether you want to use it on a CPU or GPU.
+First, create a Python 3.7 environment using Conda:
+```
+conda create --name roosterize python=3.7 pip
+conda activate roosterize
+```
 
-Next, either download a Roosterize [release][releases-link]
-or clone the Roosterize repository and enter the directory:
+Then, install PyTorch 1.1.0 by following the
+[official instructions](https://pytorch.org/get-started/previous-versions/#conda-5),
+using the command suitable for your operating system and whether you want to use
+it on a CPU or GPU. For example, the following command installs PyTorch for
+CPU-only use on Linux or Windows:
+```
+conda install pytorch-cpu==1.1.0 torchvision-cpu==0.3.0 cpuonly -c pytorch
+```
+Finally, install the required Python libraries:
+```
+conda install configargparse nltk future seutil==0.4.12 six torchtext==0.4.0 tqdm==4.30.*
+```
+
+### Installation of Roosterize and trained models
+
+To install Roosterize itself, clone the GitHub repository and enter the root directory:
 ```
 git clone https://github.com/EngineeringSoftware/roosterize.git
 cd roosterize
 ```
 
-To install other required Python libraries (`pip` is included with
-Python installation):
+Next, you need to obtain pre-trained models that capture
+naming conventions. We have trained several models using our
+[corpus][math-comp-corpus], which follows the conventions
+used in the [Mathematical Components][math-comp-website]
+family of projects. These models are available for separate
+[download][models-link].
+
+To use our pre-trained models, go to the Roosterize
+root directory, and download and unpack the archive (`models.tgz`):
 ```
-pip install -r requirements.txt
-```
-
-[releases-link]: https://github.com/EngineeringSoftware/roosterize/releases
-
-### Download pre-trained models
-
-We have trained several models using our [corpus][math-comp-corpus], which
-follows the lemma naming conventions used in the [Mathematical Components][math-comp-website]
-family of projects. The pre-trained models are available for separate [download][models-link].
-
-Put the archive with the models (`models.tgz`) in the Roosterize root
-directory, and then uncompress it:
-```
+wget https://github.com/EngineeringSoftware/roosterize/releases/download/v8.10.0/models.tgz
 tar xzf models.tgz
 ```
 
 [models-link]: https://github.com/EngineeringSoftware/roosterize/releases/download/v8.10.0/models.tgz
 
-### Usage
+## Usage
 
-To use Roosterize on a Coq verification project, you need to first
-build and install the project with the command provided by the project
-(usually `make` followed by `make install`). Then, at the root directory of
-the project repository, run the command
+To use Roosterize on a Coq verification project, you first need to
+build the Coq project using a command provided by the project
+(usually `make`). Then, at the root directory of
+the Roosterize project repository, run the command
 ```
 python -m roosterize.main suggest_lemmas \
  --project=$PATH_TO_PROJECT \
@@ -88,13 +97,13 @@ python -m roosterize.main suggest_lemmas \
  --output=./output
 ```
 where `$PATH_TO_PROJECT` should be replaced with the path to the
-project, and `$SERAPI_OPTIONS` should be replaced with the SerAPI
-command line options for mapping logical paths to directories (see [SerAPI's
-documentation](https://github.com/ejgallego/coq-serapi/blob/v8.11/FAQ.md#does-serapi-support-coqs-command-line-flags)).
-For example, if the logical path (inside Coq) for the project is `Verified`,
+Coq project, and `$SERAPI_OPTIONS` should be replaced with the SerAPI
+command line options for mapping logical paths to directories
+(see [SerAPI's documentation][serapi-faq-link]). For example,
+if the logical path (inside Coq) for the project is `Verified`,
 you should set `SERAPI_OPTIONS="-R $PATH_TO_PROJECT,Verified"`.
 
-The command extracts all lemmas from the project, uses Roosterize's
+The above command extracts all lemmas from the project, uses Roosterize's
 pre-trained model (at `./models/roosterize-ta`) to predict a lemma name
 for each lemma, and finally prints the lemma name update suggestions,
 i.e., the predicted lemma names that are different from to the existing ones.
@@ -112,6 +121,8 @@ check the help:
 ```
 python -m roosterize.main help
 ```
+
+[serapi-faq-link]: https://github.com/ejgallego/coq-serapi/blob/v8.10/FAQ.md#does-serapi-support-coqs-command-line-flags
 
 ## Technique
 
