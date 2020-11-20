@@ -9,7 +9,7 @@ DEFAULT_CONDA_PATH="$HOME/opt/anaconda3/etc/profile.d/conda.sh"
 
 
 function prepare_conda_env_cpu() {
-        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        local conda_path=${1:-$DEFAULT_CONDA_PATH}; shift
         source ${conda_path}
         conda env remove --name roosterize-cpu
         conda create --name roosterize-cpu python=3.7 pip -y
@@ -21,7 +21,7 @@ function prepare_conda_env_cpu() {
 
 
 function prepare_conda_env_gpu_cuda10() {
-        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        local conda_path=${1:-$DEFAULT_CONDA_PATH}; shift
         source ${conda_path}
         conda env remove --name roosterize-gpu
         conda create --name roosterize-gpu python=3.7 pip -y
@@ -33,7 +33,7 @@ function prepare_conda_env_gpu_cuda10() {
 
 
 function prepare_conda_env_gpu_cuda9() {
-        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        local conda_path=${1:-$DEFAULT_CONDA_PATH}; shift
         source ${conda_path}
         conda env remove --name roosterize-gpu
         conda create --name roosterize-gpu python=3.7 pip -y
@@ -46,7 +46,7 @@ function prepare_conda_env_gpu_cuda9() {
 
 function prepare_conda_env_mac() {
         # This needs to be executed on a Mac
-        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        local conda_path=${1:-$DEFAULT_CONDA_PATH}; shift
         source ${conda_path}
         conda env remove --name roosterize-mac
         conda create --name roosterize-mac python=3.7 pip -y
@@ -64,7 +64,7 @@ function package_dist() {
         #
         # requirements.txt contains the right CPU-only pytorch
         # packages for installation
-        local conda_path=${1:$DEFAULT_CONDA_PATH}; shift
+        local conda_path=${1:-$DEFAULT_CONDA_PATH}; shift
         source ${conda_path}
         conda env remove --name roosterize-package
         conda create --name roosterize-package python=3.7 pip -y
