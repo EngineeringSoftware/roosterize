@@ -1,18 +1,18 @@
-from typing import *
-
 import math
-from pathlib import Path
 import traceback
-from tqdm import tqdm
+from pathlib import Path
+from typing import Any, Callable, Iterator, List, NoReturn, Optional, Union
 
 from seutil import IOUtils, LoggingUtils
+from tqdm import tqdm
+
+logger = LoggingUtils.get_logger(__name__)
 
 
 class FilesManager:
     """
     Handles the loading/dumping of files in a dataset.
     """
-    logger = LoggingUtils.get_logger(__name__)
 
     ALL_LEMMAS_BACKEND_SEXP_TRANSFORMATIONS = "all-lemmas-bsexp-transformations"
     ALL_LEMMAS_FOREEND_SEXP_TRANSFORMATIONS = "all-lemmas-fsexp-transformations"
@@ -34,7 +34,7 @@ class FilesManager:
     def clean_path(self, rel_path: Union[str, List[str]]):
         abs_path = self.data_dir / self.assemble_rel_path(rel_path)
         if abs_path.exists():
-            self.logger.info(f"Removing existing things at {abs_path}")
+            logger.info(f"Removing existing things at {abs_path}")
             IOUtils.rm(abs_path)
         # end if
         return
@@ -43,7 +43,8 @@ class FilesManager:
     def is_json_format(cls, fmt: IOUtils.Format) -> bool:
         return fmt in [IOUtils.Format.json, IOUtils.Format.jsonPretty, IOUtils.Format.jsonNoSort]
 
-    def dump_data(self,
+    def dump_data(
+            self,
             rel_path: Union[str, List[str]],
             data: Any,
             fmt: IOUtils.Format,
@@ -53,50 +54,43 @@ class FilesManager:
     ):
         abs_path = self.data_dir / self.assemble_rel_path(rel_path)
         if abs_path.exists() and not exist_ok:
-            LoggingUtils.log_and_raise(self.logger, f"Cannot rewrite existing data at {abs_path}", IOError)
-        # end if
+            raise IOError(f"Cannot rewrite existing data at {abs_path}")
 
         abs_path.parent.mkdir(parents=True, exist_ok=True)
         if not is_batched:
             if self.is_json_format(fmt):
                 data = IOUtils.jsonfy(data)
-            # end if
             IOUtils.dump(abs_path, data, fmt)
         else:
             # In batched mode, the data need to be slice-able and sizable
             IOUtils.rm(abs_path)
             abs_path.mkdir(parents=True)
 
-            for batch_i in tqdm(range(math.ceil(len(data)/per_batch))):
-                data_batch = data[per_batch*batch_i : per_batch*(batch_i+1)]
+            for batch_i in tqdm(range(math.ceil(len(data) / per_batch))):
+                data_batch = data[per_batch * batch_i: per_batch * (batch_i + 1)]
                 if self.is_json_format(fmt):
                     data_batch = IOUtils.jsonfy(data_batch)
-                # end if
-                IOUtils.dump(abs_path/f"batch-{batch_i}.{fmt.get_extension()}", data_batch, fmt)
-            # end for
-        # end if
+                IOUtils.dump(abs_path / f"batch-{batch_i}.{fmt.get_extension()}", data_batch, fmt)
         return
 
-    def load_data(self,
+    def load_data(
+            self,
             rel_path: Union[str, List[str]],
             fmt: IOUtils.Format,
             is_batched: bool = False,
-            clz = None,
+            clz=None,
     ) -> Any:
         if self.is_json_format(fmt) and clz is None:
-            self.logger.warning(f"Load data from {rel_path} with json format, but did not specify clz (at {traceback.format_stack()})")
-        # end if
+            logger.warning(f"Load data from {rel_path} with json format, but did not specify clz (at {traceback.format_stack()})")
 
         abs_path = self.data_dir / self.assemble_rel_path(rel_path)
         if not abs_path.exists():
-            LoggingUtils.log_and_raise(self.logger, f"Cannot find data at {abs_path}", IOError)
-        # end if
+            raise IOError(f"Cannot find data at {abs_path}")
 
         if not is_batched:
             data = IOUtils.load(abs_path, fmt)
             if self.is_json_format(fmt) and clz is not None:
                 data = IOUtils.dejsonfy(data, clz)
-            # end if
             return data
         else:
             data = list()
@@ -106,25 +100,21 @@ class FilesManager:
                 data_batch = IOUtils.load(batch_file, fmt)
                 if self.is_json_format(fmt) and clz is not None:
                     data_batch = IOUtils.dejsonfy(data_batch, clz)
-                # end if
                 data.extend(data_batch)
-            # end for
             return data
-        # end if
 
-    def iter_batched_data(self,
+    def iter_batched_data(
+            self,
             rel_path: Union[str, List[str]],
             fmt: IOUtils.Format,
-            clz = None,
+            clz=None,
     ) -> Iterator:
         if self.is_json_format(fmt) and clz is None:
-            self.logger.warning(f"Load data from {rel_path} with json format, but did not specify clz")
-        # end if
+            logger.warning(f"Load data from {rel_path} with json format, but did not specify clz")
 
         abs_path = self.data_dir / self.assemble_rel_path(rel_path)
         if not abs_path.exists():
-            LoggingUtils.log_and_raise(self.logger, f"Cannot find data at {abs_path}", IOError)
-        # end if
+            raise IOError(f"Cannot find data at {abs_path}")
 
         batch_numbers = sorted([int(str(f.stem).split("-")[1]) for f in abs_path.iterdir()])
         for batch_number in batch_numbers:
@@ -134,10 +124,12 @@ class FilesManager:
                     data_entry = IOUtils.dejsonfy(data_entry, clz)
                 # end if
                 yield data_entry
-            # end for
-        # end for
 
-    def dump_ckpt(self, rel_path: Union[str, List[str]], obj: Any, ckpt_id: int,
+    def dump_ckpt(
+            self,
+            rel_path: Union[str, List[str]],
+            obj: Any,
+            ckpt_id: int,
             dump_func: Callable[[Any, str], NoReturn],
             ckpt_keep_max: int = 5,
     ) -> NoReturn:
@@ -152,25 +144,23 @@ class FilesManager:
             ckpt_ids = [int(str(f.name)) for f in abs_path.iterdir()]
             for ckpt_id in sorted(ckpt_ids)[:-ckpt_keep_max]:
                 IOUtils.rm(abs_path / str(ckpt_id))
-            # end for
-        # end if
         return
 
-    def load_ckpt(self, rel_path: Union[str, List[str]],
+    def load_ckpt(
+            self,
+            rel_path: Union[str, List[str]],
             load_func: Callable[[str], Any],
             ckpt_id: Optional[int] = None,
     ) -> Any:
         abs_path = self.data_dir / self.assemble_rel_path(rel_path)
         if not abs_path.exists():
-            LoggingUtils.log_and_raise(self.logger, f"Cannot find data at {abs_path}", IOError)
-        # end if
+            raise IOError(f"Cannot find data at {abs_path}")
 
         if ckpt_id is None:
             # Find the latest ckpt
             ckpt_ids = [int(str(f.name)) for f in abs_path.iterdir()]
             ckpt_id = max(ckpt_ids)
-            self.logger.info(f"Loading the latest checkpoint {ckpt_id} at {abs_path}")
-        # end if
+            logger.info(f"Loading the latest checkpoint {ckpt_id} at {abs_path}")
 
         return load_func(str(abs_path / str(ckpt_id)))
 
@@ -181,5 +171,4 @@ class FilesManager:
     def assemble_rel_path(cls, rel_path: Union[str, List[str]]) -> str:
         if not isinstance(rel_path, str):
             rel_path = "/".join(rel_path)
-        # end if
         return rel_path

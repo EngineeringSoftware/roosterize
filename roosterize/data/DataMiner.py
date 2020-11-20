@@ -616,7 +616,8 @@ class DataMiner:
     VTYPES_DEFINITIONS = [SexpInfo.VernacConsts.type_definition]
 
     @classmethod
-    def collect_lemmas_doc(cls,
+    def collect_lemmas_doc(
+            cls,
             doc: CoqDocument,
             ast_sexp_list: List[SexpNode],
             serapi_options: str,

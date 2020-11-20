@@ -25,9 +25,9 @@ class NamingModelBase(MLModelBase[TConfig], abc.ABC):
     logger = LoggingUtils.get_logger(__name__)
 
     @abc.abstractmethod
-    def eval_impl(self,
+    def eval_impl(
+            self,
             processed_data_dir: Path,
-            model_dir: Path,
             beam_search_size: int,
             k: int,
     ) -> List[List[Tuple[str, float]]]:
@@ -87,9 +87,9 @@ class NamingModelBase(MLModelBase[TConfig], abc.ABC):
         IOUtils.dump(output_processed_data_dir/"data-indexes.json", data_indexes, IOUtils.Format.jsonPretty)
         return
 
-    def eval(self,
+    def eval(
+            self,
             processed_data_dir: Path,
-            model_dir: Path,
             output_result_dir: Path,
     ) -> NoReturn:
         IOUtils.mk_dir(output_result_dir)
@@ -97,7 +97,7 @@ class NamingModelBase(MLModelBase[TConfig], abc.ABC):
         lemma_names: List[str] = IOUtils.load(processed_data_dir/"lemma-names.json", IOUtils.Format.json)
         lemma_qnames: List[str] = IOUtils.load(processed_data_dir/"lemma-qnames.json", IOUtils.Format.json)
         data_indexes: List[str] = IOUtils.load(processed_data_dir/"data-indexes.json", IOUtils.Format.json)
-        predictions_results: List[List[Tuple[str, float]]] = self.eval_impl(processed_data_dir, model_dir, self.BEAM_SEARCH_SIZE, self.K)
+        predictions_results: List[List[Tuple[str, float]]] = self.eval_impl(processed_data_dir, self.BEAM_SEARCH_SIZE, self.K)
         predictions: List[str] = list()
 
         # Save predictions (for error-analyze)
@@ -206,7 +206,8 @@ class NamingModelBase(MLModelBase[TConfig], abc.ABC):
 
         return
 
-    def combine_eval_results_trials(self,
+    def combine_eval_results_trials(
+            self,
             result_dirs: List[Path],
             output_result_dir: Path,
     ) -> NoReturn:
@@ -239,7 +240,8 @@ class NamingModelBase(MLModelBase[TConfig], abc.ABC):
         IOUtils.dump(output_result_dir/"test-metrics.json", combined_test_metrics, IOUtils.Format.jsonPretty)
         return
 
-    def error_analyze(self,
+    def error_analyze(
+            self,
             data_dir: Path,
             processed_data_dir: Path,
             result_dir: Path,

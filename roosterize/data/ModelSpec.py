@@ -26,7 +26,7 @@ class ModelSpec(RecordClass):
     def build_from_dict(cls, d: dict) -> "ModelSpec":
         model_spec = ModelSpec(
             name=d.get("name", ""),
-            model=d.get("model"),
+            model=d.get("model", "MultiSourceSeq2Seq"),
             config_file=d.get("config-file") if "config-file" in d else None,
             config_dict=dict(),
         )
