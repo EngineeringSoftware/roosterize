@@ -41,6 +41,36 @@ function prepare_conda_env_gpu_cuda9() {
 }
 
 
+function prepare_conda_env_mac() {
+        # This needs to be executed on a Mac
+        source ${CONDA_PATH}
+        conda env remove --name roosterize-mac
+        conda create --name roosterize-mac python=3.7 pip -y
+        conda activate roosterize-mac
+        conda install -y pytorch==1.1.0 torchvision==0.3.0 -c pytorch
+        pip install -r requirements.txt
+        conda env export --no-builds > conda-envs/mac-cpu.yml
+}
+
+
+function package_dist() {
+        # The package environment is special: we still use conda as a
+        # virtual environment, but everything should be installed
+        # using pip otherwise PyInstaller will not recognize.
+        #
+        # requirements.txt contains the right CPU-only pytorch
+        # packages for installation
+        source ${CONDA_PATH}
+        conda env remove --name roosterize-package
+        conda create --name roosterize-package python=3.7 pip -y
+        conda activate roosterize-package
+        pip install -r requirements.txt
+        pip install pyinstaller==4.1
+        make clean package
+        # Package output will be at dist/roosterize.tgz
+}
+
+
 # ==========
 # Main function -- program entry point
 # This script can be executed as ./run.sh the_function_to_run
