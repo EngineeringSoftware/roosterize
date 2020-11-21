@@ -237,6 +237,8 @@ class MultiSourceSeq2Seq(NamingModelBase[MultiSourceSeq2SeqConfig]):
 
         # Cache for processing data
         self.data_cache: dict = dict()
+        # Cache for loaded model during translation
+        self.loaded_model_cache = None
         return
 
     def get_input(
@@ -848,7 +850,15 @@ class MultiSourceSeq2Seq(NamingModelBase[MultiSourceSeq2SeqConfig]):
             # translate.main
             ArgumentParser.validate_translate_opts(opt)
 
-            translator = MultiSourceTranslator.build_translator(self.config.get_src_types(), opt, report_score=False)
+            # Cached model loading
+            if self.loaded_model_cache is None:
+                self.loaded_model_cache = MultiSourceTranslator.load_model(self.config.get_src_types(), opt)
+            translator = MultiSourceTranslator.build_translator(
+                self.config.get_src_types(),
+                opt,
+                loaded_model=self.loaded_model_cache,
+                report_score=False,
+            )
 
             has_target = True
             raw_data_keys = [f"src.{src_type}" for src_type in self.config.get_src_types()] + (["tgt"] if has_target else [])
