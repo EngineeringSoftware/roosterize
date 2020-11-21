@@ -61,7 +61,7 @@ class CommandLineInterface:
         self.exclude_files = None
         self.exclude_pattern = None
         self.serapi_options = None
-        self.model_url = "https://github.com/EngineeringSoftware/roosterize/releases/download/v1.1.0+8.10.0/roosterize-model-t1.tgz"
+        self.model_url = "https://github.com/EngineeringSoftware/roosterize/releases/download/v1.1.0+8.10.2-beta/roosterize-model-t1.tgz"
         self.compile_cmd = None
         self.loaded_config_prj: Path = None
 
