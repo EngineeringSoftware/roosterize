@@ -20,27 +20,15 @@ import torch
 from seutil import LoggingUtils
 
 
-class LoadedModel(NamedTuple):
-    fields: any
-    model: any
-    model_opt: any
-
-
 class MultiSourceTranslator(CustomTranslator):
 
     logger = LoggingUtils.get_logger(__name__)
-
-    @classmethod
-    def load_model(cls, src_types, opt) -> LoadedModel:
-        fields, model, model_opt = MultiSourceModelBuilder.load_test_model(src_types, opt)
-        return LoadedModel(fields, model, model_opt)
 
     @classmethod
     def build_translator(
             cls,
             src_types,
             opt,
-            loaded_model: LoadedModel = None,
             report_score=True,
             logger=None,
             out_file=None,
@@ -50,10 +38,9 @@ class MultiSourceTranslator(CustomTranslator):
 
         assert len(opt.models) == 1, "ensemble model is not supported"
 
-        if loaded_model is None:
-            fields, model, model_opt = MultiSourceModelBuilder.load_test_model(src_types, opt)
-        else:
-            fields, model, model_opt = loaded_model
+        # load_test_model = onmt.decoders.ensemble.load_test_model \
+        #     if len(opt.models) > 1 else onmt.model_builder.load_test_model
+        fields, model, model_opt = MultiSourceModelBuilder.load_test_model(src_types, opt)
 
         scorer = onmt.translate.GNMTGlobalScorer.from_opt(opt)
 
