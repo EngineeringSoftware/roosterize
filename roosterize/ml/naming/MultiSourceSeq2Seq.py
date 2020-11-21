@@ -349,7 +349,9 @@ class MultiSourceSeq2Seq(NamingModelBase[MultiSourceSeq2SeqConfig]):
         # Inputs
         all_inputs: Dict[str, List[List[str]]] = self.get_all_inputs(lemmas, docs_sub_tokenizers)
         for input_type, src_sentences in all_inputs.items():
-            IOUtils.dump(output_processed_data_dir/f"src.{input_type}.txt", src_sentences, IOUtils.Format.txtList)
+            IOUtils.dump(output_processed_data_dir/f"src.{input_type}.txt",
+                "".join([" ".join(sent) + "\n" for sent in src_sentences]),
+                IOUtils.Format.txt)
 
         # Outputs
         IOUtils.dump(
