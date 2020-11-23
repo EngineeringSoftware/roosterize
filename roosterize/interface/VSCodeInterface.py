@@ -56,7 +56,7 @@ class VSCodeInterface(CommandLineInterface):
 
         total = len(good_names) + len(bad_names_and_suggestions) + len(bad_names_no_suggestion)
         self.show_message(f"{data.path}: Analyzed {total} lemma names, "
-                          f"{len(good_names)} ({len(good_names)/total:.1%}) look good. "
+                          f"{len(good_names)} ({len(good_names)/total:.1%}) conform to the learned naming conventions. "
                           f"Roosterize made {len(bad_names_and_suggestions)} suggestions.")
 
         # Publish suggestions as diagnostics

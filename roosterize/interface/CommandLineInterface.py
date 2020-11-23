@@ -61,7 +61,7 @@ class CommandLineInterface:
         self.exclude_files = None
         self.exclude_pattern = None
         self.serapi_options = None
-        self.model_url = "https://github.com/EngineeringSoftware/roosterize/releases/download/v1.1.0+8.10.0/roosterize-model-t1.tgz"
+        self.model_url = "https://github.com/EngineeringSoftware/roosterize/releases/download/v1.1.0+8.10.2-beta/roosterize-model-t1.tgz"
         self.compile_cmd = None
         self.loaded_config_prj: Path = None
 
@@ -241,7 +241,7 @@ class CommandLineInterface:
         # Print suggestions
         total = len(good_names) + len(bad_names_and_suggestions) + len(bad_names_no_suggestion)
         print(f"== Analyzed {total} lemma names, "
-              f"{len(good_names)} ({len(good_names)/total:.1%}) look good.")
+              f"{len(good_names)} ({len(good_names)/total:.1%}) conform to the learned naming conventions.")
         if len(bad_names_and_suggestions) > 0:
             print(f"==========")
             print(f"== {len(bad_names_and_suggestions)} can be improved and here are Roosterize's suggestions:")
@@ -249,7 +249,7 @@ class CommandLineInterface:
                 print(f"Line {lemma.vernac_command[0].lineno}: {lemma.name} => {suggestion} (likelihood: {score:.2f})")
         if len(bad_names_no_suggestion) > 0:
             print(f"==========")
-            print(f"== {len(bad_names_no_suggestion)} can be improved but Roosterize cannot provide good suggestion (please consider improve_project_model):")
+            print(f"== {len(bad_names_no_suggestion)} can be improved but Roosterize cannot provide good suggestion:")
             for lemma, suggestion, score in sorted(bad_names_no_suggestion, key=lambda x: x[2], reverse=True):
                 print(f"Line {lemma.vernac_command[0].lineno}: {lemma.name} (best guess: {suggestion}; likelihood: {score:.2f})")
 
