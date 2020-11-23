@@ -8,7 +8,7 @@ section below.
 
 ## Requirements
 
-- Supported operating systems: Linux, Mac
+- Linux or macOS
 - [OCaml 4.07.1](https://ocaml.org)
 - [SerAPI 0.7.1](https://github.com/ejgallego/coq-serapi)
 - [Coq 8.10.2](https://coq.inria.fr/download)
@@ -84,25 +84,7 @@ conda activate roosterize
 
 ### Installation of Roosterize and trained models
 
-Next, you need to obtain pre-trained models that capture
-naming conventions. We have trained several models using our
-[corpus][math-comp-corpus], which follows the conventions
-used in the [Mathematical Components][math-comp-website]
-family of projects. These models are available for separate
-[download][models-link].
-
-To use our pre-trained models, go to the Roosterize
-root directory, and download and unpack the archive (`models.tgz`):
-```
-wget https://github.com/EngineeringSoftware/roosterize/releases/download/v8.10.0/models.tgz
-tar xzf models.tgz
-```
-
-[models-link]: https://github.com/EngineeringSoftware/roosterize/releases/download/v8.10.0/models.tgz
-
-## Usage
-
-You need to obtain a pre-trained model that capture naming
+Next, you need to obtain a pre-trained model that capture naming
 conventions.  The default pre-trained model, which was trained using
 our [corpus][math-comp-corpus] and follows the conventions used in the
 [Mathematical Components][math-comp-website] family of projects, can
@@ -115,6 +97,8 @@ be obtained by running the command:
 The model will be downloaded to `$HOME/.roosterize/`. To use a
 different model (that we [released][latest-release] or you trained),
 simply put it in `$HOME/.roosterize/`.
+
+## Usage
 
 To use Roosterize on a Coq verification project, you first need to
 build the Coq project using a command provided by the project (usually
