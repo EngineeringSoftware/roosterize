@@ -82,7 +82,7 @@ Finally, activate the Conda environment before using Roosterize:
 conda activate roosterize
 ```
 
-### Installation of Roosterize and trained models
+### Installation of trained models
 
 Next, you need to obtain a pre-trained model that capture naming
 conventions.  The default pre-trained model, which was trained using
