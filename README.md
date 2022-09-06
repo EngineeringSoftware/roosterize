@@ -193,8 +193,8 @@ the research paper in any related publication:
 
 ## Authors
 
-- [Pengyu Nie](https://cozy.ece.utexas.edu/~pynie/)
+- [Pengyu Nie](https://pengyunie.github.io)
 - [Karl Palmskog](https://setoid.com)
 - [Emilio Jesús Gallego Arias](https://www.irif.fr/~gallego/)
-- [Junyi Jessy Li](http://jessyli.com)
-- [Milos Gligoric](http://users.ece.utexas.edu/~gligoric/)
+- [Junyi Jessy Li](https://jessyli.com)
+- [Milos Gligoric](https://users.ece.utexas.edu/~gligoric/)
